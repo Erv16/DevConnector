@@ -20,3 +20,50 @@ export const getCurrentProfile = () => async dispatch => {
     });
   }
 };
+
+// Create or Update a Profile
+
+// formData - form data that is submitted
+// history - Redirect after submitting the form to a client side route
+// edit - know if updating or creating a profile
+
+export const createProfile = (
+  formData,
+  history,
+  edit = false
+) => async dispatch => {
+  try {
+    const config = {
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    };
+
+    const res = await axios.post('/api/profile', formData, config);
+
+    dispatch({
+      type: GET_PROFILE,
+      payload: res.data
+    });
+
+    dispatch(setAlert(edit ? 'Profile Updates' : 'Profile Created'), 'success');
+
+    if (!edit) {
+      // Redirecting in an action is different
+      // Cannot redirect using <Redirect> as done in components
+      // Make use of the history parameter's push method
+      history.push('/dashboard');
+    }
+  } catch (err) {
+    const errors = err.response.data.errors;
+
+    if (errors) {
+      errors.forEach(error => dispatch(setAlert(error.msg, 'danger')));
+    }
+
+    dispatch({
+      type: PROFILE_ERROR,
+      payload: { msg: err.response.statusText, status: err.response.status }
+    });
+  }
+};
