@@ -46,7 +46,7 @@ export const createProfile = (
       payload: res.data
     });
 
-    dispatch(setAlert(edit ? 'Profile Updates' : 'Profile Created'), 'success');
+    dispatch(setAlert(edit ? 'Profile Updated' : 'Profile Created'), 'success');
 
     if (!edit) {
       // Redirecting in an action is different
