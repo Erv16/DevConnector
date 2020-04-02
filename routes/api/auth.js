@@ -17,7 +17,7 @@ router.get('/', auth, async (req, res) => {
     res.json(user);
   } catch (err) {
     console.error(err.message);
-    res.sendStatus(500).send('Server Error');
+    res.status(500).send('Server Error');
   }
 });
 
@@ -34,7 +34,7 @@ router.post(
   async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      return res.sendStatus(400).json({ errors: errors.array() });
+      return res.status(400).json({ errors: errors.array() });
     }
 
     const { email, password } = req.body;
@@ -44,14 +44,14 @@ router.post(
       let user = await User.findOne({ email });
       if (!user) {
         return res
-          .sendStatus(400)
+          .status(400)
           .json({ errors: [{ msg: 'Invalid credentials' }] });
       }
 
       const isMatch = await bcrypt.compare(password, user.password);
       if (!isMatch) {
         return res
-          .sendStatus(400)
+          .status(400)
           .json({ errors: [{ msg: 'Invalid credentials' }] });
       }
 
@@ -75,7 +75,7 @@ router.post(
       );
     } catch (err) {
       console.error(err.message);
-      res.sendStatus(500).send('Server Error');
+      res.status(500).send('Server Error');
     }
   }
 );
